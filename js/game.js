@@ -237,7 +237,7 @@ function gameLoop() {
             const distPlayer = Math.hypot(player.x - enemy.x, player.y - enemy.y);
             if (distPlayer - enemy.radius - player.radius < 1) {
                 if (player.isInvincible) return;
-                if (player.shield > 0) { player.shield--; screenShake(5, 10); createExplosion(player.x, player.y, '#fff', 5); } else { player.health -= 30; screenShake(10, 20); createExplosion(enemy.x, enemy.y, enemy.color, 10); AudioSys.playExplosion(); } enemies.splice(eIndex, 1); if (player.health <= 0) gameOver();
+                if (player.shield > 0) { player.shield--; screenShake(5, 10); createExplosion(player.x, player.y, '#fff', 5); } else { player.health -= enemy.collisionDamage; screenShake(10, 20); createExplosion(enemy.x, enemy.y, enemy.color, 10); AudioSys.playExplosion(); } enemies.splice(eIndex, 1); if (player.health <= 0) gameOver();
             }
             bullets.forEach((bullet, bIndex) => {
                 const distBullet = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);

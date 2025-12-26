@@ -13,6 +13,7 @@ class Enemy {
         this.x = x; this.y = y; this.type = config.type; this.color = config.color; 
         this.maxHp = config.hp; this.score = config.score; this.radius = config.radius; this.sides = config.sides; this.angle = 0; 
         this.baseSpeed = config.speed;
+        this.collisionDamage = config.collisionDamage; // 添加碰撞伤害属性
         this.spinSpeed = (Math.random() * 0.1 - 0.05) * (4 / (typeIdx + 1)); 
         this.hp = Math.ceil(this.maxHp * globalDifficultyMultiplier);
     }
