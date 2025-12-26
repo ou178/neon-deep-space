@@ -47,7 +47,7 @@ No installation required! This game runs entirely in the browser.
 1. Clone this repository:
 
     ```bash
-    git clone https://github.com/your-username/neon-deep-space.git
+    https://github.com/ou178/neon-deep-space.git
     ```
 
 2. Open `index.html` in your preferred web browser (Chrome, Firefox, Edge, etc.).
@@ -73,3 +73,4 @@ This project is open source and available under the [MIT License](LICENSE).
 **Enjoy the game! May your neon light shine bright in the deep space.**
 
 Click to play/test.<https://ou178.github.io/neon-deep-space/>
+
