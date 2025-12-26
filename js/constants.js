@@ -61,12 +61,12 @@ const WEAPON_TYPES = ['blaster', 'shotgun', 'sniper'];
 
 // 敌人配置
 const ENEMY_TYPES = [
-    { type: 'triangle', color: '#ff0', speed: 4.5, hp: 3, score: 2, radius: 15, sides: 3 },
-    { type: 'diamond',  color: '#fff', speed: 7.0, hp: 9, score: 5, radius: 12, sides: 4 },
-    { type: 'square',   color: '#0ff', speed: 2.5, hp: 6, score: 1, radius: 18, sides: 4 },
-    { type: 'hexagon',  color: '#f05', speed: 1.8, hp: 3, score: 3, radius: 22, sides: 6 },
-    { type: 'pentagon', color: '#0af', speed: 1.5, hp: 50, score: 10, radius: 25, sides: 5 },
-    { type: 'circle',   color: '#a0f', speed: 0.8, hp: 60, score: 8, radius: 28, sides: 20 }
+    { type: 'triangle', color: '#ff0', speed: 4.5, hp: 3, score: 2, radius: 15, sides: 3, collisionDamage: 10 },
+    { type: 'diamond',  color: '#fff', speed: 7.0, hp: 9, score: 5, radius: 12, sides: 4, collisionDamage: 20 },
+    { type: 'square',   color: '#0ff', speed: 2.5, hp: 6, score: 1, radius: 18, sides: 4, collisionDamage: 10 },
+    { type: 'hexagon',  color: '#f05', speed: 1.8, hp: 3, score: 3, radius: 22, sides: 6, collisionDamage: 10 },
+    { type: 'pentagon', color: '#0af', speed: 1.5, hp: 50, score: 10, radius: 25, sides: 5, collisionDamage: 15 },
+    { type: 'circle',   color: '#a0f', speed: 0.8, hp: 60, score: 8, radius: 28, sides: 20, collisionDamage: 20 }
 ];
 
 const SPEED_LEVELS = { 1: 5.0, 2: 5.5, 3: 6.0, 4: 6.5, 5: 7.0, 6: 7.5 };
