@@ -71,3 +71,5 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 **Enjoy the game! May your neon light shine bright in the deep space.**
+
+Click to play/test.<https://ou178.github.io/neon-deep-space/>
