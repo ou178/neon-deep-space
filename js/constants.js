@@ -1,0 +1,72 @@
+// 升级定义
+const UPGRADE_DEFS = [
+    { id: 'bomb', name: "战术核弹", desc: "开局携带+1，最大携带上限+1", baseCost: 2000, max: 3 },
+    { id: 'satellite', name: "卫星护航", desc: "开局携带+1，最大携带上限+1", baseCost: 3500, max: 4 },
+    { id: 'damage', name: "武器强化", desc: "所有伤害提升 10%", baseCost: 3000, max: 20 },
+    { id: 'dashCD', name: "量子引擎", desc: "冲刺冷却时间 -1秒", baseCost: 4000, max: 5 },
+    { id: 'health', name: "纳米装甲", desc: "最大生命值 +20%", baseCost: 2500, max: 20 },
+    { id: 'enemySlow', name: "时间膨胀", desc: "敌人移动速度 -10%", baseCost: 3000, max: 5 },
+    { id: 'satRadius', name: "卫星扩容", desc: "环绕半径+10，旋转速度+15%", baseCost: 5000, max: 5 },
+    { id: 'freezeDuration', name: "低温核心", desc: "时间冻结道具时长 +1秒", baseCost: 1500, max: 5 },
+    { id: 'recoil', name: "反冲阻尼器", desc: "射击后座力降低 20%", baseCost: 4500, max: 5 }
+];
+
+// 武器配置系统
+const WEAPON_CONFIG = {
+    'blaster': {
+        name: "脉冲机枪",
+        color: "#ff0",
+        getStats: (lvl) => ({
+            count: Math.min(lvl, 6),
+            rate: Math.max(150 - lvl * 10, 80),
+            spread: 0.15,
+            damage: 1,
+            pierce: 1,
+            velocity: 12,
+            radius: 3,
+            life: Infinity
+        })
+    },
+    'shotgun': {
+        name: "爆破霰弹",
+        color: "#fa0",
+        getStats: (lvl) => ({
+            count: 6 + lvl * 2,
+            rate: 500,
+            spread: 0.8,
+            damage: 2,
+            pierce: 1,
+            velocity: 10,
+            radius: 4,
+            life: 25
+        })
+    },
+    'sniper': {
+        name: "光子狙击",
+        color: "#0ff",
+        getStats: (lvl) => ({
+            count: 1,
+            rate: Math.max(400 - lvl * 30, 150),
+            spread: 0,
+            damage: 10 + lvl * 4,
+            pierce: 5 + lvl,
+            velocity: 30,
+            radius: 5,
+            life: Infinity
+        })
+    }
+};
+
+const WEAPON_TYPES = ['blaster', 'shotgun', 'sniper'];
+
+// 敌人配置
+const ENEMY_TYPES = [
+    { type: 'triangle', color: '#ff0', speed: 4.5, hp: 3, score: 2, radius: 15, sides: 3 },
+    { type: 'diamond',  color: '#fff', speed: 7.0, hp: 9, score: 5, radius: 12, sides: 4 },
+    { type: 'square',   color: '#0ff', speed: 2.5, hp: 6, score: 1, radius: 18, sides: 4 },
+    { type: 'hexagon',  color: '#f05', speed: 1.8, hp: 3, score: 3, radius: 22, sides: 6 },
+    { type: 'pentagon', color: '#0af', speed: 1.5, hp: 50, score: 10, radius: 25, sides: 5 },
+    { type: 'circle',   color: '#a0f', speed: 0.8, hp: 60, score: 8, radius: 28, sides: 20 }
+];
+
+const SPEED_LEVELS = { 1: 5.0, 2: 5.5, 3: 6.0, 4: 6.5, 5: 7.0, 6: 7.5 };
