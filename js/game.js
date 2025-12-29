@@ -211,10 +211,7 @@ function gameLoop() {
                     if (bullet.pierce <= 0) setTimeout(() => bullets.splice(bIndex, 1), 0);
                     createExplosion(bullet.x, bullet.y, '#888', 2);
                     if (destroyed) {
-                        createExplosion(asteroid.x, asteroid.y, '#888', 20);
-                        score += asteroid.score;
-                        scoreEl.innerText = score;
-                        AudioSys.playExplosion();
+                        asteroid.destroy();
                         setTimeout(() => asteroids.splice(aIndex, 1), 0);
                     }
                 }
@@ -226,10 +223,7 @@ function gameLoop() {
                     createExplosion(eb.x, eb.y, '#888', 2);
                     setTimeout(() => enemyBullets.splice(ebIndex, 1), 0);
                     if (destroyed) {
-                        createExplosion(asteroid.x, asteroid.y, '#888', 20);
-                        score += asteroid.score;
-                        scoreEl.innerText = score;
-                        AudioSys.playExplosion();
+                        asteroid.destroy();
                         setTimeout(() => asteroids.splice(aIndex, 1), 0);
                     }
                 }
@@ -262,15 +256,14 @@ function gameLoop() {
             });
             // Boss碰撞检测
             if (boss) {
-                // 玩家与Boss碰撞
-                const distPlayer = Math.hypot(player.x - boss.x, player.y - boss.y);
-                if (distPlayer - boss.radius - player.radius < 1) {
+                const distPlayerBoss = Math.hypot(player.x - boss.x, player.y - boss.y);
+                if (distPlayerBoss - boss.radius - player.radius < 1) {
+                    // 玩家与Boss碰撞
                     if (player.isInvincible) {
                         // 玩家无敌时Boss受到伤害
                         const bossDestroyed = boss.takeDamage(boss.maxHealth - 10); // 给予10的伤害
                         if (bossDestroyed) {
-                            score += boss.score;
-                            scoreEl.innerText = score;
+                            boss.destroy();
                             boss = null;
                         }
                     } else {
@@ -298,14 +291,7 @@ function gameLoop() {
                     bullet.pierce--;
                     if (bullet.pierce <= 0) setTimeout(() => bullets.splice(bIndex, 1), 0);
                     if (destroyed) {
-                        AudioSys.playExplosion(true);
-                        score += boss.score;
-                        scoreEl.innerText = score;
-                        createExplosion(boss.x, boss.y, '#f0f', 150);
-                        screenShake(40, 40);
-                        spawnPowerUp(boss.x, boss.y);
-                        spawnPowerUp(boss.x - 30, boss.y + 20);
-                        spawnPowerUp(boss.x + 30, boss.y + 20);
+                        boss.destroy();
                         setTimeout(() => { boss = null; }, 0);
                     }
                 }
@@ -318,11 +304,7 @@ function gameLoop() {
                     const destroyed = boss.takeDamage(satelliteDamage);
                     createExplosion(o.x, o.y, '#fff', 2);
                     if (destroyed) {
-                        AudioSys.playExplosion(true);
-                        score += boss.score;
-                        scoreEl.innerText = score;
-                        createExplosion(boss.x, boss.y, '#f0f', 150);
-                        screenShake(40, 40);
+                        boss.destroy();
                         setTimeout(() => { boss = null; }, 0);
                     }
                 }
@@ -338,13 +320,8 @@ function gameLoop() {
                     const destroyed = enemy.takeDamage(satelliteDamage);
                     createExplosion(o.x, o.y, '#fff', 2);
                     if (destroyed) {
-                        createExplosion(enemy.x, enemy.y, enemy.color, 15);
+                        enemy.destroy();
                         setTimeout(() => { enemies.splice(eIndex, 1); }, 0);
-                        score += enemy.score;
-                        scoreEl.innerText = score;
-                        AudioSys.playExplosion();
-                        if (Math.random() < 0.15)
-                            spawnPowerUp(enemy.x, enemy.y);
                     }
                 }
             });
@@ -353,10 +330,7 @@ function gameLoop() {
             if (distPlayer - enemy.radius - player.radius < 1) {
                 if (player.isInvincible) {
                     // 玩家无敌时敌人直接死亡
-                    createExplosion(enemy.x, enemy.y, enemy.color, 15);
-                    score += enemy.score;
-                    scoreEl.innerText = score;
-                    AudioSys.playExplosion();
+                    enemy.destroy();
                     enemies.splice(eIndex, 1);
                 } else {
                     // 玩家非无敌时原有的碰撞逻辑
@@ -382,10 +356,8 @@ function gameLoop() {
                     if (bullet.pierce <= 0) setTimeout(() => bullets.splice(bIndex, 1), 0);
 
                     if (destroyed) {
-                        createExplosion(enemy.x, enemy.y, enemy.color, 15);
+                        enemy.destroy();
                         setTimeout(() => { enemies.splice(eIndex, 1); }, 0);
-                        score += enemy.score; scoreEl.innerText = score; AudioSys.playExplosion();
-                        if (Math.random() < 0.15) spawnPowerUp(enemy.x, enemy.y);
                     }
                 }
             });

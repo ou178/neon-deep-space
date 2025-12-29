@@ -110,4 +110,18 @@ class Enemy {
         createExplosion(this.x, this.y, '#fff', 1); 
         return this.hp <= 0; 
     }
+    
+    destroy() {
+        // 创建爆炸效果
+        createExplosion(this.x, this.y, this.color, 15);
+        // 增加分数
+        score += this.score;
+        scoreEl.innerText = score;
+        // 播放爆炸音效
+        AudioSys.playExplosion();
+        // 8%概率生成道具
+        if (Math.random() < 0.08) {
+            spawnPowerUp(this.x, this.y);
+        }
+    }
 }

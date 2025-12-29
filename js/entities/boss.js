@@ -89,7 +89,22 @@ class Boss {
     takeDamage(amount) {
         this.hp -= amount; 
         createExplosion(this.x + (Math.random()-0.5)*50, this.y + (Math.random()-0.5)*50, '#f0f', 5); 
-        if (this.hp % (Math.max(5, this.maxHp * 0.1)) === 0) AudioSys.playExplosion(true); 
         return this.hp <= 0;
+    }
+    
+    destroy() {
+        // 播放大型爆炸音效
+        AudioSys.playExplosion(true);
+        // 增加分数
+        score += this.score;
+        scoreEl.innerText = score;
+        // 创建大型爆炸效果
+        createExplosion(this.x, this.y, '#f0f', 150);
+        // 屏幕震动
+        screenShake(40, 40);
+        // 生成多个道具
+        spawnPowerUp(this.x, this.y);
+        spawnPowerUp(this.x - 30, this.y + 20);
+        spawnPowerUp(this.x + 30, this.y + 20);
     }
 }
