@@ -4,6 +4,7 @@ function spawnEnemy() {
     enemies.push(new Enemy(x, y));
 }
 
+// 修改小行星生成函数，限制最多同时存在2个小行星
 function spawnAsteroid() {
     const edge = Math.floor(Math.random() * 4); let x, y; const buffer = 60;
     switch(edge) { 
@@ -12,9 +13,12 @@ function spawnAsteroid() {
         case 2: x = Math.random() * canvas.width; y = canvas.height + buffer; break; 
         case 3: x = -buffer; y = Math.random() * canvas.height; break; 
     }
-    asteroids.push(new Asteroid(x, y));
+    
+    // 限制小行星数量最多为2个
+    if (asteroids.length < 2) {
+        asteroids.push(new Asteroid(x, y));
+    }
 }
-
 function spawnBoss() {
     if (boss) return; 
     boss = new Boss(currentMilestoneIndex + 1); 
@@ -112,8 +116,9 @@ function gameLoop() {
             spawnBoss(); currentMilestoneIndex++; screenShake(20, 10);
         }
 
+        // 修改小行星生成频率，大幅增加生成间隔
         asteroidSpawnTimer++;
-        if (asteroidSpawnTimer > 200) {
+        if (asteroidSpawnTimer > 500) { // 将生成间隔从250增加到500，大幅降低陨石的生成频率
             spawnAsteroid();
             asteroidSpawnTimer = 0;
         }
