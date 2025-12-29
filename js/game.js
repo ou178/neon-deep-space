@@ -1,27 +1,27 @@
 function spawnEnemy() {
     const edge = Math.floor(Math.random() * 4); let x, y; const buffer = 50;
-    switch(edge) { case 0: x = Math.random() * canvas.width; y = -buffer; break; case 1: x = canvas.width + buffer; y = Math.random() * canvas.height; break; case 2: x = Math.random() * canvas.width; y = canvas.height + buffer; break; case 3: x = -buffer; y = Math.random() * canvas.height; break; }
+    switch (edge) { case 0: x = Math.random() * canvas.width; y = -buffer; break; case 1: x = canvas.width + buffer; y = Math.random() * canvas.height; break; case 2: x = Math.random() * canvas.width; y = canvas.height + buffer; break; case 3: x = -buffer; y = Math.random() * canvas.height; break; }
     enemies.push(new Enemy(x, y));
 }
 
 // 修改小行星生成函数，限制最多同时存在2个小行星
 function spawnAsteroid() {
     const edge = Math.floor(Math.random() * 4); let x, y; const buffer = 60;
-    switch(edge) { 
-        case 0: x = Math.random() * canvas.width; y = -buffer; break; 
-        case 1: x = canvas.width + buffer; y = Math.random() * canvas.height; break; 
-        case 2: x = Math.random() * canvas.width; y = canvas.height + buffer; break; 
-        case 3: x = -buffer; y = Math.random() * canvas.height; break; 
+    switch (edge) {
+        case 0: x = Math.random() * canvas.width; y = -buffer; break;
+        case 1: x = canvas.width + buffer; y = Math.random() * canvas.height; break;
+        case 2: x = Math.random() * canvas.width; y = canvas.height + buffer; break;
+        case 3: x = -buffer; y = Math.random() * canvas.height; break;
     }
-    
+
     // 限制小行星数量最多为2个
     if (asteroids.length < 2) {
         asteroids.push(new Asteroid(x, y));
     }
 }
 function spawnBoss() {
-    if (boss) return; 
-    boss = new Boss(currentMilestoneIndex + 1); 
+    if (boss) return;
+    boss = new Boss(currentMilestoneIndex + 1);
 }
 
 function spawnPowerUp(x, y) {
@@ -46,10 +46,10 @@ function screenShake(duration, magnitude) { shakeDuration = duration; shakeMagni
 
 function gameOver() {
     currentState = STATE.GAMEOVER;
-    
-    const energyGained =  Math.floor(score / 10);
+
+    const energyGained = Math.floor(score / 10);
     currentEnergy += energyGained;
-    
+
     let isNewRecord = false;
     if (score > highScore) {
         highScore = score;
@@ -64,12 +64,12 @@ function gameOver() {
     }
     energyGainedEl.innerText = energyGained.toLocaleString();
 
-    hud.style.display = 'none'; gameOverScreen.classList.remove('hidden'); 
+    hud.style.display = 'none'; gameOverScreen.classList.remove('hidden');
     createExplosion(player.x, player.y, '#0ff', 50); AudioSys.playExplosion(true);
 }
 
 function updateHUD() {
-    healthEl.innerText = Math.ceil(player.health); 
+    healthEl.innerText = Math.ceil(player.health);
     shieldEl.innerText = player.shield; bombEl.innerText = player.bombs; orbiterEl.innerText = player.orbiters.length;
     const wLevel = player.weaponLevel; weaponEl.innerText = "LV." + wLevel;
     if (wLevel >= 7) weaponEl.className = "hud-item text-red"; else weaponEl.className = "hud-item text-orange";
@@ -93,20 +93,29 @@ function updateHUD() {
 }
 
 function gameLoop() {
-    ctx.fillStyle = 'rgba(5, 5, 16, 0.4)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(5, 5, 16, 0.4)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.save();
-    if (shakeDuration > 0) { const dx = (Math.random() - 0.5) * shakeMagnitude; const dy = (Math.random() - 0.5) * shakeMagnitude; ctx.translate(dx, dy); shakeDuration--; }
-    
+    if (shakeDuration > 0) {
+        const dx = (Math.random() - 0.5) * shakeMagnitude;
+        const dy = (Math.random() - 0.5) * shakeMagnitude;
+        ctx.translate(dx, dy); shakeDuration--;
+    }
+
     if (freezeTimer > 0) {
-        ctx.fillStyle = 'rgba(0, 255, 255, 0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.font = "30px Arial"; ctx.fillStyle = "rgba(0, 255, 255, 0.5)"; ctx.textAlign = "center";
-        ctx.fillText("TIME FREEZE", canvas.width/2, canvas.height/2); freezeTimer--;
+        ctx.fillText("TIME FREEZE", canvas.width / 2, canvas.height / 2); freezeTimer--;
     }
 
     stars.forEach(star => { star.update(); star.draw(); });
 
-    if (currentState === STATE.PLAYING) {
-        if (score < 1500) { difficultyFactor = 0.5 + (score / 1500) * 0.5; globalDifficultyMultiplier = 1; }
+    // 只有在游戏进行状态且未暂停时才执行游戏更新逻辑
+    if (currentState === STATE.PLAYING && !isPaused) {
+        if (score < 1500) {
+            difficultyFactor = 0.5 + (score / 1500) * 0.5; globalDifficultyMultiplier = 1;
+        }
         else {
             difficultyFactor = 1.0;
             globalDifficultyMultiplier = 1 + Math.floor((score - 1500) / 2000) * 0.5;
@@ -125,7 +134,7 @@ function gameLoop() {
 
         if (!boss || !boss.entered) {
             enemySpawnTimer++;
-            let spawnRate = Math.max(10, 60 - Math.floor(score / 400)); 
+            let spawnRate = Math.max(10, 60 - Math.floor(score / 400));
             if (enemySpawnTimer > spawnRate) { spawnEnemy(); enemySpawnTimer = 0; }
         }
 
@@ -198,13 +207,13 @@ function gameLoop() {
             const distBoss = Math.hypot(player.x - boss.x, player.y - boss.y);
             if (distBoss - boss.radius - player.radius < 1) {
                 if (player.isInvincible) return;
-                if (player.shield > 0) player.shield--; else player.health -= 1; screenShake(2, 5); if (player.health <= 0) gameOver(); 
+                if (player.shield > 0) player.shield--; else player.health -= 1; screenShake(2, 5); if (player.health <= 0) gameOver();
             }
             bullets.forEach((bullet, bIndex) => {
                 const distBullet = Math.hypot(bullet.x - boss.x, bullet.y - boss.y);
                 if (distBullet - boss.radius - bullet.radius < 1) {
                     const destroyed = boss.takeDamage(bullet.damage);
-                    bullet.pierce--; 
+                    bullet.pierce--;
                     if (bullet.pierce <= 0) setTimeout(() => bullets.splice(bIndex, 1), 0);
                     if (destroyed) { AudioSys.playExplosion(true); score += boss.score; scoreEl.innerText = score; createExplosion(boss.x, boss.y, '#f0f', 150); screenShake(40, 40); spawnPowerUp(boss.x, boss.y); spawnPowerUp(boss.x - 30, boss.y + 20); spawnPowerUp(boss.x + 30, boss.y + 20); setTimeout(() => { boss = null; }, 0); }
                 }
@@ -212,7 +221,7 @@ function gameLoop() {
             player.orbiters.forEach((o, oIndex) => {
                 const distOrb = Math.hypot(o.x - boss.x, o.y - boss.y);
                 if (distOrb - boss.radius - o.radius < 1) {
-                    const destroyed = boss.takeDamage(satelliteDamage); 
+                    const destroyed = boss.takeDamage(satelliteDamage);
                     createExplosion(o.x, o.y, '#fff', 2);
                     if (destroyed) {
                         AudioSys.playExplosion(true); score += boss.score; scoreEl.innerText = score; createExplosion(boss.x, boss.y, '#f0f', 150); screenShake(40, 40); setTimeout(() => { boss = null; }, 0);
@@ -227,7 +236,7 @@ function gameLoop() {
             player.orbiters.forEach((o) => {
                 const dist = Math.hypot(o.x - enemy.x, o.y - enemy.y);
                 if (dist - enemy.radius - o.radius < 1) {
-                    const destroyed = enemy.takeDamage(satelliteDamage); 
+                    const destroyed = enemy.takeDamage(satelliteDamage);
                     createExplosion(o.x, o.y, '#fff', 2);
                     if (destroyed) {
                         createExplosion(enemy.x, enemy.y, enemy.color, 15);
@@ -247,8 +256,8 @@ function gameLoop() {
             bullets.forEach((bullet, bIndex) => {
                 const distBullet = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
                 if (distBullet - enemy.radius - bullet.radius < 1) {
-                    const destroyed = enemy.takeDamage(bullet.damage); 
-                    bullet.pierce--; 
+                    const destroyed = enemy.takeDamage(bullet.damage);
+                    bullet.pierce--;
                     if (bullet.pierce <= 0) setTimeout(() => bullets.splice(bIndex, 1), 0);
 
                     if (destroyed) {
@@ -271,17 +280,17 @@ function gameLoop() {
                 } else if (p.type === 'weapon') {
                     if (player.weaponLevel < 6) { player.weaponLevel += 1; createExplosion(player.x, player.y, '#fa0', 15); screenShake(5, 5); } else { score += 1000; scoreEl.innerText = score; createExplosion(player.x, player.y, '#fff', 20); }
                 } else if (p.type === 'freeze') {
-                    freezeTimer = 180 + globalFreezeDurationBonus; 
+                    freezeTimer = 180 + globalFreezeDurationBonus;
                     createExplosion(player.x, player.y, '#0ff', 10);
                 } else if (p.type === 'bomb') {
                     if (player.bombs < player.maxBombs) { player.bombs++; bombEl.innerText = player.bombs; } else { score += 500; scoreEl.innerText = score; } createExplosion(player.x, player.y, '#f00', 10);
                 } else if (p.type === 'orbiter') {
-                    if (player.orbiters.length < player.maxSatellites) { 
+                    if (player.orbiters.length < player.maxSatellites) {
                         // 拾取时也计算正确的角度，防止重叠
                         const idx = player.orbiters.length;
-                        player.orbiters.push(new Orbiter(idx, player.maxSatellites)); 
-                        orbiterEl.innerText = player.orbiters.length; 
-                        createExplosion(player.x, player.y, '#fff', 10); 
+                        player.orbiters.push(new Orbiter(idx, player.maxSatellites));
+                        orbiterEl.innerText = player.orbiters.length;
+                        createExplosion(player.x, player.y, '#fff', 10);
                     } else { score += 500; scoreEl.innerText = score; }
                 } else if (p.type === 'speed') {
                     if (player.speedLevel < 6) { player.speedLevel++; player.speed = SPEED_LEVELS[player.speedLevel]; speedEl.innerText = "LV." + player.speedLevel; createExplosion(player.x, player.y, '#f0f', 10); } else { score += 500; scoreEl.innerText = score; }
@@ -290,6 +299,16 @@ function gameLoop() {
                 setTimeout(() => powerUps.splice(pIndex, 1), 0);
             }
         });
+    } else if (currentState === STATE.PLAYING && isPaused) {
+        // 暂停状态下只渲染游戏画面但不更新游戏逻辑
+        player.draw();
+        bullets.forEach(bullet => bullet.draw());
+        asteroids.forEach(asteroid => asteroid.draw());
+        enemies.forEach(enemy => enemy.draw());
+        if (boss) boss.draw();
+        enemyBullets.forEach(eb => eb.draw());
+        player.orbiters.forEach(orbiter => orbiter.draw());
+        powerUps.forEach(powerUp => powerUp.draw());
     }
 
     particles.forEach((particle, index) => { if (particle.alpha <= 0) particles.splice(index, 1); else { particle.update(); particle.draw(); } });
