@@ -46,7 +46,7 @@ let powerUpSpawnTimer = 0;
 
 // 游戏难度和里程碑
 let currentMilestoneIndex = 0;
-let bossMilestones = [5000, 15000, 30000, 50000, 70000, 100000, 150000];
+let bossMilestones = [500, 1000, 3000, 5000, 15000, 30000, 50000, 70000, 100000, 150000];
 let difficultyFactor = 1;
 let globalDifficultyMultiplier = 1;
 
