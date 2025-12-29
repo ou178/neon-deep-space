@@ -1,16 +1,27 @@
 class Player {
     constructor() {
         this.x = canvas.width / 2; this.y = canvas.height / 2;
-        this.radius = 15; this.color = '#0ff';
-        this.velocity = { x: 0, y: 0 }; this.speed = 5; this.friction = 0.92; this.angle = 0;
-        this.health = 100; this.maxHealth = 100; this.shield = 0; this.weaponLevel = 1; this.lastShot = 0;
-        this.bombs = 1; this.maxBombs = 3; this.speedLevel = 1; this.orbiters = []; 
+        this.radius = 15;
+        this.color = '#0ff';
+        this.velocity = { x: 0, y: 0 };
+        this.speed = 5;
+        this.friction = 0.92;
+        this.angle = 0;
+        this.health = 100;
+        this.maxHealth = 100;
+        this.shield = 0;
+        this.weaponLevel = 1;
+        this.lastShot = 0;
+        this.bombs = 1;
+        this.maxBombs = 3;
+        this.speedLevel = 1;
+        this.orbiters = []; 
         this.maxSatellites = 6;
         
         this.dashCooldownTime = 10000; 
         this.lastDash = Date.now() - 10000; // 确保dash一开始就处于就绪状态
         this.dashDistance = 200; 
-        this.dashDuration = 300; 
+        this.dashDuration = 500;
         this.isInvincible = false; 
         this.invincibleTimer = null; 
 
@@ -36,14 +47,21 @@ class Player {
     }
 
     update(deltaTime) {
-        if (keys.w) this.velocity.y -= 0.5; if (keys.s) this.velocity.y += 0.5;
-        if (keys.a) this.velocity.x -= 0.5; if (keys.d) this.velocity.x += 0.5;
+        if (keys.w) this.velocity.y -= 0.5;
+        if (keys.s) this.velocity.y += 0.5;
+        if (keys.a) this.velocity.x -= 0.5;
+        if (keys.d) this.velocity.x += 0.5;
 
         const speed = Math.hypot(this.velocity.x, this.velocity.y);
-        if (speed > this.speed) { const ratio = this.speed / speed; this.velocity.x *= ratio; this.velocity.y *= ratio; }
-
-        this.velocity.x *= this.friction; this.velocity.y *= this.friction;
-        this.x += this.velocity.x; this.y += this.velocity.y;
+        if (speed > this.speed) {
+            const ratio = this.speed / speed;
+            this.velocity.x *= ratio;
+            this.velocity.y *= ratio;
+        }
+        this.velocity.x *= this.friction;
+        this.velocity.y *= this.friction;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
 
         if (this.x < this.radius) { 
             this.x = this.radius; 
@@ -65,41 +83,76 @@ class Player {
         this.angle = Math.atan2(mouse.y - this.y, mouse.x - this.x);
 
         const stats = WEAPON_CONFIG[this.currentWeapon].getStats(this.weaponLevel);
-        if (mouseBtn.left && Date.now() - this.lastShot > stats.rate) { this.shoot(stats); }
+        if (mouseBtn.left && Date.now() - this.lastShot > stats.rate) {
+                this.shoot(stats);
+        }
 
         if (keys.w || keys.a || keys.s || keys.d) {
-            if (Math.random() < 0.5) particles.push(new Particle(this.x - Math.cos(this.angle) * 15, this.y - Math.sin(this.angle) * 15, 'rgba(0, 255, 255, 0.5)', { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 }));
+            if (Math.random() < 0.5) 
+                particles.push(new Particle(this.x - Math.cos(this.angle) * 15, this.y - Math.sin(this.angle) * 15, 'rgba(0, 255, 255, 0.5)', { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 }));
         }
         this.orbiters.forEach(o => o.update(this));
     }
 
     draw() {
         this.orbiters.forEach(o => o.draw());
-        ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
         if (this.isInvincible) {
             ctx.globalAlpha = 0.5 + Math.sin(Date.now() / 20) * 0.4; 
         }
         if (this.shield > 0) {
-            ctx.beginPath(); ctx.arc(0, 0, 28, 0, Math.PI * 2);
-            ctx.strokeStyle = '#0f0'; ctx.lineWidth = 2; ctx.shadowBlur = 10; ctx.shadowColor = '#0f0'; ctx.setLineDash([5, 5]);
-            ctx.rotate(-Date.now() / 500); ctx.stroke(); ctx.setLineDash([]); ctx.rotate(Date.now() / 500);
+            ctx.beginPath();
+            ctx.arc(0, 0, 28, 0, Math.PI * 2);
+            ctx.strokeStyle = '#0f0';
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#0f0';
+            ctx.setLineDash([5, 5]);
+            ctx.rotate(-Date.now() / 500);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.rotate(Date.now() / 500);
         }
-        ctx.shadowBlur = 20; ctx.shadowColor = this.color; ctx.strokeStyle = this.color; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(15, 0); ctx.lineTo(-10, -10); ctx.lineTo(-5, 0); ctx.lineTo(-10, 10); ctx.closePath(); ctx.stroke();
-        let coreColor = 'rgba(0, 255, 255, 0.1)'; if(this.weaponLevel >= 3) coreColor = 'rgba(255, 170, 0, 0.3)'; if(this.weaponLevel >= 5) coreColor = 'rgba(255, 50, 50, 0.4)';
-        ctx.fillStyle = coreColor; ctx.fill(); ctx.restore();
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = this.color;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(15, 0);
+        ctx.lineTo(-10, -10);
+        ctx.lineTo(-5, 0);
+        ctx.lineTo(-10, 10);
+        ctx.closePath();
+        ctx.stroke();
+        let coreColor = 'rgba(0, 255, 255, 0.1)';
+        if(this.weaponLevel >= 3)
+            coreColor = 'rgba(255, 170, 0, 0.3)';
+        if(this.weaponLevel >= 5)
+            coreColor = 'rgba(255, 50, 50, 0.4)';
+        ctx.fillStyle = coreColor;
+        ctx.fill();
+        ctx.restore();
     }
 
     shoot(stats) {
-        const count = stats.count; const spread = stats.spread;
+        const count = stats.count;
+        const spread = stats.spread;
         let startAngle = this.angle;
-        if (count === 1) startAngle = this.angle;
-        else if (count % 2 === 1) startAngle = this.angle - ((count - 1) / 2) * spread;
-        else startAngle = this.angle - ((count / 2) * spread) + (spread / 2);
+        if (count === 1)
+            startAngle = this.angle;
+        else if (count % 2 === 1)
+            startAngle = this.angle - ((count - 1) / 2) * spread;
+        else
+            startAngle = this.angle - ((count / 2) * spread) + (spread / 2);
 
         for (let i = 0; i < count; i++) {
             const finalAngle = startAngle + (i * spread);
-            const velocity = { x: Math.cos(finalAngle) * stats.velocity, y: Math.sin(finalAngle) * stats.velocity };
+            const velocity = { 
+                x: Math.cos(finalAngle) * stats.velocity,
+                y: Math.sin(finalAngle) * stats.velocity
+            };
             bullets.push(new Bullet(
                 this.x + Math.cos(finalAngle) * 15, 
                 this.y + Math.sin(finalAngle) * 15, 
@@ -112,7 +165,8 @@ class Player {
             ));
         }
         this.lastShot = Date.now();
-        const recoilForce = (0.5 + count * 0.1) * globalRecoilMult;
+        const weaponRecoil = WEAPON_CONFIG[this.currentWeapon].recoil;
+        const recoilForce = weaponRecoil * globalRecoilMult;
         this.velocity.x -= Math.cos(this.angle) * recoilForce; 
         this.velocity.y -= Math.sin(this.angle) * recoilForce;
         AudioSys.playShoot(this.currentWeapon);
@@ -120,12 +174,24 @@ class Player {
 
     useBomb() {
         if (this.bombs > 0) {
-            this.bombs--; bombEl.innerText = this.bombs;
-            screenShake(40, 50); AudioSys.playExplosion(true);
-            ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; ctx.fillRect(0,0, canvas.width, canvas.height);
-            enemies.forEach(e => { createExplosion(e.x, e.y, e.color, 20); score += e.score; });
-            asteroids.forEach(a => { createExplosion(a.x, a.y, '#888', 10); score += a.score; });
-            enemies = []; enemyBullets = []; asteroids = []; scoreEl.innerText = score;
+            this.bombs--;
+            bombEl.innerText = this.bombs;
+            screenShake(40, 50);
+            AudioSys.playExplosion(true);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+            enemies.forEach(e => {
+                createExplosion(e.x, e.y, e.color, 20);
+                score += e.score;
+            });
+            asteroids.forEach(a => {
+                createExplosion(a.x, a.y, '#888', 10);
+                score += a.score;
+            });
+            enemies = [];
+            enemyBullets = [];
+            asteroids = [];
+            scoreEl.innerText = score;
         }
     }
 
