@@ -3,7 +3,7 @@ const STATE = {
     MENU: 'menu',
     PLAYING: 'playing',
     GAMEOVER: 'gameover',
-    PAUSED: 'paused' // 添加暂停状态
+    PAUSED: 'paused'
 };
 
 // 游戏状态和全局变量
@@ -304,9 +304,23 @@ function startGame() {
     globalOrbitRadiusAdd = (playerUpgrades.satRadius || 0) * 10;
     globalOrbitSpeedMult = 1 + ((playerUpgrades.satRadius || 0) * 0.15);
 
-    AudioSys.init(); AudioSys.startBGM();
-    score = 0; bullets = []; enemies = []; enemyBullets = []; asteroids = []; particles = []; powerUps = []; boss = null;
-    scoreEl.innerText = score; healthEl.innerText = 100; shieldEl.innerText = 0; weaponEl.innerText = "LV.1"; bombEl.innerText = 1; speedEl.innerText = "LV.1"; orbiterEl.innerText = "0";
+    AudioSys.init();
+    AudioSys.startBGM();
+    score = 0;
+    bullets = [];
+    enemies = [];
+    enemyBullets = [];
+    asteroids = [];
+    particles = [];
+    powerUps = [];
+    boss = null;
+    scoreEl.innerText = score;
+    healthEl.innerText = 100;
+    shieldEl.innerText = 0;
+    weaponEl.innerText = "LV.1";
+    bombEl.innerText = 1;
+    speedEl.innerText = "LV.1";
+    orbiterEl.innerText = "0";
     
     player = new Player();
     
