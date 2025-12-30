@@ -17,6 +17,7 @@ class Player {
         this.speedLevel = 1;
         this.orbiters = []; 
         this.maxSatellites = 6;
+        this.isAlive = true;
         
         this.dashCooldownTime = 10000; 
         this.lastDash = Date.now() - 10000; // 确保dash一开始就处于就绪状态
@@ -188,9 +189,12 @@ class Player {
                 createExplosion(a.x, a.y, '#888', 10);
                 score += a.score;
             });
-            enemies = [];
-            enemyBullets = [];
-            asteroids = [];
+            // 使用setTimeout延迟修改数组，避免在遍历过程中修改数组导致的问题
+            setTimeout(() => {
+                enemies = [];
+                enemyBullets = [];
+                asteroids = [];
+            }, 0);
             scoreEl.innerText = score;
         }
     }

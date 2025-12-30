@@ -13,6 +13,7 @@ class Boss {
         this.entered = false;
     }
     update(player) {
+        if (!player) return;
         if (!this.entered) {
             this.y += 2; 
             if (this.y > 150) { 
