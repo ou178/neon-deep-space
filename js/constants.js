@@ -36,7 +36,7 @@ const WEAPON_CONFIG = {
             count: 6 + lvl * 2,
             rate: 500,
             spread: 0.8,
-            damage: 2,
+            damage: 4,
             pierce: 1,
             velocity: 10,
             radius: 4,
