@@ -93,20 +93,6 @@ const mouse = { x: 0, y: 0 };
 const keys = { w: false, a: false, s: false, d: false, shift: false };
 const mouseBtn = { left: false };
 
-// ESC键暂停游戏事件监听
-document.addEventListener('keydown', (e) => {
-    if (e.code === 27) {
-        // 只有在游戏进行中才能暂停
-        if (currentState === STATE.PLAYING) {
-            togglePause();
-        }
-        // 在暂停状态下再次按ESC可以继续游戏
-        else if (currentState === STATE.PAUSED) {
-            togglePause();
-        }
-    }
-});
-
 // 切换暂停状态函数
 function togglePause() {
     if (currentState === STATE.PLAYING) {
@@ -286,7 +272,10 @@ function init() {
     requestAnimationFrame(gameLoop);
 }
 
-function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+function resizeCanvas() { 
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
 function returnToMenu() {
     gameOverScreen.classList.add('hidden');
@@ -341,9 +330,14 @@ function startGame() {
         player.orbiters.push(new Orbiter(i, satelliteCount));
     }
 
-    currentState = STATE.PLAYING; freezeTimer = 0;
-    difficultyFactor = 0.5; currentMilestoneIndex = 0; globalDifficultyMultiplier = 1;
-    startScreen.classList.add('hidden'); shopScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); hud.style.display = 'flex';
+    currentState = STATE.PLAYING;
+    freezeTimer = 0;
+    difficultyFactor = 0.5;
+    currentMilestoneIndex = 0; globalDifficultyMultiplier = 1;
+    startScreen.classList.add('hidden');
+    shopScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    hud.style.display = 'flex';
     player.updateWeaponUI();
     updateHUD();
 }

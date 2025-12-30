@@ -188,9 +188,12 @@ class Player {
                 createExplosion(a.x, a.y, '#888', 10);
                 score += a.score;
             });
-            enemies = [];
-            enemyBullets = [];
-            asteroids = [];
+            // 使用setTimeout延迟修改数组，避免在遍历过程中修改数组导致的问题
+            setTimeout(() => {
+                enemies = [];
+                enemyBullets = [];
+                asteroids = [];
+            }, 0);
             scoreEl.innerText = score;
         }
     }

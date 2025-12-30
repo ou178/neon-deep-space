@@ -446,5 +446,6 @@ function gameLoop() {
             particle.draw();
         } 
     });
-    ctx.restore(); requestAnimationFrame(gameLoop);
+    ctx.restore();
+    requestAnimationFrame(gameLoop);
 }
