@@ -16,8 +16,9 @@ const WEAPON_CONFIG = {
     'blaster': {
         name: "脉冲机枪",
         color: "#ff0",
+        recoil: 0.5,
         getStats: (lvl) => ({
-            count: Math.min(lvl, 6),
+            count: Math.min(lvl, 8),
             rate: Math.max(150 - lvl * 10, 80),
             spread: 0.15,
             damage: 1,
@@ -30,11 +31,12 @@ const WEAPON_CONFIG = {
     'shotgun': {
         name: "爆破霰弹",
         color: "#fa0",
+        recoil: 0,
         getStats: (lvl) => ({
             count: 6 + lvl * 2,
             rate: 500,
             spread: 0.8,
-            damage: 2,
+            damage: 4,
             pierce: 1,
             velocity: 10,
             radius: 4,
@@ -44,6 +46,7 @@ const WEAPON_CONFIG = {
     'sniper': {
         name: "光子狙击",
         color: "#0ff",
+        recoil: 1.5,
         getStats: (lvl) => ({
             count: 1,
             rate: Math.max(400 - lvl * 30, 150),

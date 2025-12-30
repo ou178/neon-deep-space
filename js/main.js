@@ -2,7 +2,8 @@
 const STATE = {
     MENU: 'menu',
     PLAYING: 'playing',
-    GAMEOVER: 'gameover'
+    GAMEOVER: 'gameover',
+    PAUSED: 'paused'
 };
 
 // 游戏状态和全局变量
@@ -11,6 +12,9 @@ let score = 0;
 let highScore = localStorage.getItem('neon_wars_high_score') ? parseInt(localStorage.getItem('neon_wars_high_score')) : 0;
 let currentEnergy = localStorage.getItem('neon_wars_energy') ? parseInt(localStorage.getItem('neon_wars_energy')) : 0;
 let playerUpgrades = {};
+
+// 添加暂停状态控制
+let isPaused = false;
 
 // 安全解析localStorage中的升级数据
 try {
@@ -42,7 +46,7 @@ let powerUpSpawnTimer = 0;
 
 // 游戏难度和里程碑
 let currentMilestoneIndex = 0;
-let bossMilestones = [5000, 15000, 30000, 50000];
+let bossMilestones = [500, 1000, 3000, 5000, 15000, 30000, 50000, 70000, 100000, 150000];
 let difficultyFactor = 1;
 let globalDifficultyMultiplier = 1;
 
@@ -88,6 +92,56 @@ const scoreEl = document.getElementById('score');
 const mouse = { x: 0, y: 0 };
 const keys = { w: false, a: false, s: false, d: false, shift: false };
 const mouseBtn = { left: false };
+
+// ESC键暂停游戏事件监听
+document.addEventListener('keydown', (e) => {
+    if (e.code === 27) {
+        // 只有在游戏进行中才能暂停
+        if (currentState === STATE.PLAYING) {
+            togglePause();
+        }
+        // 在暂停状态下再次按ESC可以继续游戏
+        else if (currentState === STATE.PAUSED) {
+            togglePause();
+        }
+    }
+});
+
+// 切换暂停状态函数
+function togglePause() {
+    if (currentState === STATE.PLAYING) {
+        currentState = STATE.PAUSED;
+        isPaused = true;
+        // 显示暂停菜单
+        showPauseMenu();
+    } else if (currentState === STATE.PAUSED) {
+        currentState = STATE.PLAYING;
+        isPaused = false;
+        // 隐藏暂停菜单
+        hidePauseMenu();
+    }
+}
+
+// 暂停菜单显示和隐藏函数
+function showPauseMenu() {
+    // 获取暂停菜单元素
+    const pauseMenu = document.getElementById('pause-menu');
+    // 更新暂停时的分数显示
+    const pauseScoreEl = document.getElementById('pause-score');
+    pauseScoreEl.textContent = score;
+    // 显示暂停菜单
+    pauseMenu.classList.remove('hidden');
+    // 隐藏HUD
+    hud.style.display = 'none';
+}
+
+function hidePauseMenu() {
+    // 隐藏暂停菜单
+    const pauseMenu = document.getElementById('pause-menu');
+    pauseMenu.classList.add('hidden');
+    // 显示HUD
+    hud.style.display = 'flex';
+}
 
 // 重置存档逻辑
 function resetSave() {
@@ -148,9 +202,31 @@ function saveGameData() {
     localStorage.setItem('neon_wars_high_score', highScore);
 }
 
+// 暂停菜单按钮功能
+function continueGame() {
+    // 继续游戏
+    isPaused = false;
+    currentState = STATE.PLAYING;
+    hidePauseMenu();
+}
+
+function restartGameFromPause() {
+    // 从暂停状态重新开始游戏
+    continueGame();
+    startGame();
+}
+
+function returnToMainMenuFromPause() {
+    // 从暂停状态返回主菜单
+    isPaused = false;
+    hidePauseMenu();
+    returnToMenu();
+}
+
 function init() {
-    resizeCanvas(); stars = []; for (let i = 0; i < 100; i++) stars.push(new Star());
-    
+    resizeCanvas();
+    stars = [];
+    for (let i = 0; i < 100; i++) stars.push(new Star());
     highScoreDisplay.innerText = highScore.toLocaleString();
     energyDisplay.innerText = currentEnergy.toLocaleString();
     renderShop(); 
@@ -166,6 +242,12 @@ function init() {
             player.switchWeapon();
         }
         if (e.code === 'Space' && currentState === STATE.PLAYING) player.useBomb();
+        // ESC键暂停功能
+        if (e.key === 'Escape' && currentState === STATE.PLAYING) {
+            togglePause();
+        } else if (e.key === 'Escape' && currentState === STATE.PAUSED) {
+            continueGame();
+        }
     });
     window.addEventListener('keyup', (e) => { 
         if(e.key.toLowerCase() in keys) keys[e.key.toLowerCase()] = false; 
@@ -195,6 +277,11 @@ function init() {
 
     // 绑定重置按钮
     document.getElementById('reset-save-btn').addEventListener('click', resetSave);
+    
+    // 绑定暂停菜单按钮
+    document.getElementById('resume-btn').addEventListener('click', continueGame);
+    document.getElementById('restart-pause-btn').addEventListener('click', restartGameFromPause);
+    document.getElementById('return-menu-pause-btn').addEventListener('click', returnToMainMenuFromPause);
 
     requestAnimationFrame(gameLoop);
 }
@@ -217,9 +304,23 @@ function startGame() {
     globalOrbitRadiusAdd = (playerUpgrades.satRadius || 0) * 10;
     globalOrbitSpeedMult = 1 + ((playerUpgrades.satRadius || 0) * 0.15);
 
-    AudioSys.init(); AudioSys.startBGM();
-    score = 0; bullets = []; enemies = []; enemyBullets = []; asteroids = []; particles = []; powerUps = []; boss = null;
-    scoreEl.innerText = score; healthEl.innerText = 100; shieldEl.innerText = 0; weaponEl.innerText = "LV.1"; bombEl.innerText = 1; speedEl.innerText = "LV.1"; orbiterEl.innerText = "0";
+    AudioSys.init();
+    AudioSys.startBGM();
+    score = 0;
+    bullets = [];
+    enemies = [];
+    enemyBullets = [];
+    asteroids = [];
+    particles = [];
+    powerUps = [];
+    boss = null;
+    scoreEl.innerText = score;
+    healthEl.innerText = 100;
+    shieldEl.innerText = 0;
+    weaponEl.innerText = "LV.1";
+    bombEl.innerText = 1;
+    speedEl.innerText = "LV.1";
+    orbiterEl.innerText = "0";
     
     player = new Player();
     

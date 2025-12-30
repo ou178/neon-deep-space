@@ -60,4 +60,14 @@ class Asteroid {
         createExplosion(this.x, this.y, '#888', 1);
         return this.hp <= 0;
     }
+    
+    destroy() {
+        // 创建爆炸效果
+        createExplosion(this.x, this.y, '#888', 20);
+        // 增加分数
+        score += this.score;
+        scoreEl.innerText = score;
+        // 播放爆炸音效
+        AudioSys.playExplosion();
+    }
 }

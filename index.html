@@ -94,6 +94,20 @@
                 <button class="btn btn-shop" id="return-menu-btn">返回主菜单</button>
             </div>
         </div>
+
+        <!-- 暂停菜单 -->
+        <div class="menu-screen hidden" id="pause-menu">
+            <h1 style="color: #0ff; -webkit-text-fill-color: #0ff; text-shadow: 0 0 20px #0ff;">系统暂停</h1>
+            <p class="subtitle">当前得分: <span id="pause-score" style="color:#fff; font-weight:bold;">0</span></p>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px; align-items: center;">
+                <button class="btn" id="resume-btn" style="border-color: #0f0; color: #0f0; box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); width: 200px;">继续任务</button>
+                <button class="btn" id="restart-pause-btn" style="border-color: #f05; color: #f05; box-shadow: 0 0 15px rgba(255, 0, 85, 0.2); width: 200px;">重新开始</button>
+                <button class="btn btn-shop" id="return-menu-pause-btn" style="width: 200px;">返回主菜单</button>
+            </div>
+            
+            <p class="controls-hint" style="margin-top: 30px;">按 <span class="key">ESC</span> 键继续游戏</p>
+        </div>
     </div>
 
     <canvas id="gameCanvas"></canvas>

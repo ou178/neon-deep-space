@@ -14,12 +14,21 @@ class Boss {
     }
     update(player) {
         if (!this.entered) {
-            this.y += 2; if (this.y > 150) { this.entered = true; this.active = true; AudioSys.playPowerUp('bomb'); } return;
+            this.y += 2; 
+            if (this.y > 150) { 
+                this.entered = true; 
+                this.active = true; 
+                AudioSys.playPowerUp('bomb'); 
+            } 
+            return; 
         }
         this.x += Math.sin(Date.now() / 1000) * (2 + this.level * 0.2); 
         if (this.y < 150) this.y += 0.5;
         this.angle += 0.02 + (this.level * 0.005);
-        if (Date.now() - this.lastShot > this.fireRate) { this.shoot(player); this.lastShot = Date.now(); }
+        if (Date.now() - this.lastShot > this.fireRate) {
+            this.shoot(player); 
+            this.lastShot = Date.now(); 
+        }
     }
     shoot(player) {
         const angle = Math.atan2(player.y - this.y, player.x - this.x);
@@ -36,16 +45,66 @@ class Boss {
     draw() {
         ctx.save(); ctx.translate(this.x, this.y);
         if (!this.entered) {
-            ctx.globalAlpha = Math.abs(Math.sin(Date.now() / 200)); ctx.fillStyle = '#f0f'; ctx.font = '30px Arial'; ctx.fillText("WARNING BOSS", -90, 0);
+            ctx.globalAlpha = Math.abs(Math.sin(Date.now() / 200)); 
+            ctx.fillStyle = '#f0f';
+            ctx.font = '30px Arial'; 
+            ctx.fillText("WARNING BOSS", -90, 0);
         }
-        ctx.rotate(this.angle); ctx.shadowBlur = 30; ctx.shadowColor = this.color; ctx.strokeStyle = this.color; ctx.lineWidth = 4;
-        ctx.beginPath(); for (let i = 0; i < 8; i++) { const theta = i * 2 * Math.PI / 8; const r = (i % 2 === 0) ? this.radius : this.radius * 0.6; const x = r * Math.cos(theta); const y = r * Math.sin(theta); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.closePath(); ctx.stroke();
-        ctx.fillStyle = 'rgba(255, 0, 255, 0.2)'; ctx.fill(); ctx.rotate(-this.angle * 2); ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.restore();
+        ctx.rotate(this.angle); 
+        ctx.shadowBlur = 30; 
+        ctx.shadowColor = this.color; 
+        ctx.strokeStyle = this.color; 
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+            const theta = i * 2 * Math.PI / 8;
+            const r = (i % 2 === 0) ? this.radius : this.radius * 0.6; 
+            const x = r * Math.cos(theta); 
+            const y = r * Math.sin(theta); 
+            if (i === 0) ctx.moveTo(x, y); 
+            else ctx.lineTo(x, y); 
+        } 
+        ctx.closePath(); 
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255, 0, 255, 0.2)'; 
+        ctx.fill(); 
+        ctx.rotate(-this.angle * 2); 
+        ctx.beginPath(); 
+        ctx.arc(0, 0, 20, 0, Math.PI * 2); 
+        ctx.fillStyle = '#fff'; 
+        ctx.fill(); 
+        ctx.restore();  
         if (this.entered) {
-            ctx.save(); ctx.fillStyle = '#f00'; ctx.fillRect(canvas.width/2 - 100, 50, 200, 10); ctx.fillStyle = '#f0f'; ctx.fillRect(canvas.width/2 - 100, 50, 200 * (this.hp / this.maxHp), 10); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.strokeRect(canvas.width/2 - 100, 50, 200, 10); ctx.restore();
+            ctx.save();
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(canvas.width/2 - 100, 50, 200, 10); 
+            ctx.fillStyle = '#f0f'; 
+            ctx.fillRect(canvas.width/2 - 100, 50, 200 * (this.hp / this.maxHp), 10); 
+            ctx.strokeStyle = '#fff'; 
+            ctx.lineWidth = 1; 
+            ctx.strokeRect(canvas.width/2 - 100, 50, 200, 10); 
+            ctx.restore();
         }
     }
     takeDamage(amount) {
-        this.hp -= amount; createExplosion(this.x + (Math.random()-0.5)*50, this.y + (Math.random()-0.5)*50, '#f0f', 5); if (this.hp % (Math.max(5, this.maxHp * 0.1)) === 0) AudioSys.playExplosion(true); return this.hp <= 0;
+        this.hp -= amount; 
+        createExplosion(this.x + (Math.random()-0.5)*50, this.y + (Math.random()-0.5)*50, '#f0f', 5); 
+        return this.hp <= 0;
+    }
+    
+    destroy() {
+        // 播放大型爆炸音效
+        AudioSys.playExplosion(true);
+        // 增加分数
+        score += this.score;
+        scoreEl.innerText = score;
+        // 创建大型爆炸效果
+        createExplosion(this.x, this.y, '#f0f', 150);
+        // 屏幕震动
+        screenShake(40, 40);
+        // 生成多个道具
+        spawnPowerUp(this.x, this.y);
+        spawnPowerUp(this.x - 30, this.y + 20);
+        spawnPowerUp(this.x + 30, this.y + 20);
     }
 }
