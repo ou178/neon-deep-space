@@ -17,6 +17,7 @@ class Player {
         this.speedLevel = 1;
         this.orbiters = []; 
         this.maxSatellites = 6;
+        this.isAlive = true;
         
         this.dashCooldownTime = 10000; 
         this.lastDash = Date.now() - 10000; // 确保dash一开始就处于就绪状态

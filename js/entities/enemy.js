@@ -36,6 +36,7 @@ class Enemy {
     }
 
     update(player) {
+        if (!player) return;
         if (freezeTimer > 0) return;
         
         // 性能优化：减少角度计算频率，每3帧计算一次角度

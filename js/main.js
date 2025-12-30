@@ -170,7 +170,6 @@ function hidePauseMenu() {
     // 显示HUD
     hud.style.display = 'flex';
 }
-
 // 暂停游戏
 function pauseGame() {
     isPaused = true;
@@ -185,9 +184,10 @@ function continueGame() {
     currentState = STATE.PLAYING;
     hidePauseMenu();
 }
-
 function restartGameFromPause() {
     // 从暂停状态重新开始游戏
+    isPaused = false;
+    currentState = STATE.PLAYING;
     continueGame();
     startGame();
 }
@@ -195,6 +195,7 @@ function restartGameFromPause() {
 function returnToMainMenuFromPause() {
     // 从暂停状态返回主菜单
     isPaused = false;
+    currentState = STATE.MENU;
     hidePauseMenu();
     returnToMenu();
 }
@@ -219,10 +220,9 @@ function init() {
         }
         if (e.code === 'Space' && currentState === STATE.PLAYING) player.useBomb();
         // ESC键暂停功能
-        if (e.key === 'Escape' && currentState === STATE.PLAYING) {
-            pauseGame();
-        } else if (e.key === 'Escape' && currentState === STATE.PAUSED) {
-            continueGame();
+        if (e.key === 'Escape' ) {
+            if (currentState === STATE.PLAYING) pauseGame();
+            else if (currentState === STATE.PAUSED) continueGame();
         }
     });
     window.addEventListener('keyup', (e) => { 
@@ -237,8 +237,18 @@ function init() {
     window.addEventListener('mousedown', () => mouseBtn.left = true);
     window.addEventListener('mouseup', () => mouseBtn.left = false);
 
-    document.getElementById('start-btn').addEventListener('click', startGame);
-    document.getElementById('restart-btn').addEventListener('click', startGame);
+    document.getElementById('start-btn').addEventListener('click', ()=>{
+        startScreen.classList.add('hidden');
+        hud.style.display = 'flex';
+        if(currentState === STATE.MENU)
+            startGame();
+    });
+    document.getElementById('restart-btn').addEventListener('click', ()=>{
+        gameOverScreen.classList.add('hidden');
+        hud.style.display = 'flex';
+        if(currentState === STATE.GAMEOVER)
+            startGame();
+    });
     document.getElementById('open-shop-btn').addEventListener('click', () => {
         renderShop();
         startScreen.classList.add('hidden');
@@ -302,7 +312,7 @@ function startGame() {
     orbiterEl.innerText = "0";
     
     player = new Player();
-    
+    player.isAlive = true;
     // 确保所有升级值都有默认值，避免NaN计算
     player.health = 100 + ((playerUpgrades.health || 0) * 20);
     player.maxHealth = player.health; 

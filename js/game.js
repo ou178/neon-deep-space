@@ -80,8 +80,19 @@ function gameOver() {
     }
     energyGainedEl.innerText = energyGained.toLocaleString();
 
-    hud.style.display = 'none'; gameOverScreen.classList.remove('hidden');
-    createExplosion(player.x, player.y, '#0ff', 50); AudioSys.playExplosion(true);
+    hud.style.display = 'none';
+    gameOverScreen.classList.remove('hidden');
+    createExplosion(player.x, player.y, '#0ff', 50);
+    AudioSys.playExplosion(true);
+
+    bullets = [];
+    enemies = [];
+    enemyBullets = [];
+    asteroids = [];
+    particles = [];
+    powerUps = [];
+    boss = null;
+    player.isAlive = false;
 }
 
 function updateHUD() {
@@ -176,8 +187,9 @@ function gameLoop() {
             powerUpSpawnTimer = 0;
         }
 
-        player.update(); player.draw(); updateHUD();
-
+        player.update();
+        player.draw();
+        updateHUD();
         bullets.forEach((bullet, bIndex) => {
             bullet.update(); bullet.draw();
             if (bullet.x < -50 || bullet.x > canvas.width + 50 || bullet.y < -50 || bullet.y > canvas.height + 50 || (bullet.life !== Infinity && bullet.life <= 0)) {
@@ -233,7 +245,8 @@ function gameLoop() {
         });
 
         if (boss) {
-            boss.update(player); boss.draw();
+            boss.update(player);
+            boss.draw();
             enemyBullets.forEach((eb, ebIndex) => {
                 eb.update();
                 eb.draw();
@@ -314,7 +327,8 @@ function gameLoop() {
         }
 
         enemies.forEach((enemy, eIndex) => {
-            enemy.update(player); enemy.draw();
+            enemy.update(player);
+            enemy.draw();
 
             player.orbiters.forEach((o) => {
                 const dist = Math.hypot(o.x - enemy.x, o.y - enemy.y);

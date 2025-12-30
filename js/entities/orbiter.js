@@ -10,6 +10,7 @@ class Orbiter {
         this.radius = 5;
     }
     update(player) {
+        if (!player) return;
         this.angle += this.speed;
         this.x = player.x + Math.cos(this.angle) * this.distance;
         this.y = player.y + Math.sin(this.angle) * this.distance;
