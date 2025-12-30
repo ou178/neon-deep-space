@@ -92,43 +92,6 @@ const scoreEl = document.getElementById('score');
 const mouse = { x: 0, y: 0 };
 const keys = { w: false, a: false, s: false, d: false, shift: false };
 const mouseBtn = { left: false };
-
-// 切换暂停状态函数
-function togglePause() {
-    if (currentState === STATE.PLAYING) {
-        currentState = STATE.PAUSED;
-        isPaused = true;
-        // 显示暂停菜单
-        showPauseMenu();
-    } else if (currentState === STATE.PAUSED) {
-        currentState = STATE.PLAYING;
-        isPaused = false;
-        // 隐藏暂停菜单
-        hidePauseMenu();
-    }
-}
-
-// 暂停菜单显示和隐藏函数
-function showPauseMenu() {
-    // 获取暂停菜单元素
-    const pauseMenu = document.getElementById('pause-menu');
-    // 更新暂停时的分数显示
-    const pauseScoreEl = document.getElementById('pause-score');
-    pauseScoreEl.textContent = score;
-    // 显示暂停菜单
-    pauseMenu.classList.remove('hidden');
-    // 隐藏HUD
-    hud.style.display = 'none';
-}
-
-function hidePauseMenu() {
-    // 隐藏暂停菜单
-    const pauseMenu = document.getElementById('pause-menu');
-    pauseMenu.classList.add('hidden');
-    // 显示HUD
-    hud.style.display = 'flex';
-}
-
 // 重置存档逻辑
 function resetSave() {
     if (confirm("确定要重置存档吗？\n这将清除所有能量、升级和历史最高分！")) {
@@ -187,8 +150,35 @@ function saveGameData() {
     localStorage.setItem('neon_wars_upgrades', JSON.stringify(playerUpgrades));
     localStorage.setItem('neon_wars_high_score', highScore);
 }
+// 暂停菜单显示和隐藏函数
+function showPauseMenu() {
+    // 获取暂停菜单元素
+    const pauseMenu = document.getElementById('pause-menu');
+    // 更新暂停时的分数显示
+    const pauseScoreEl = document.getElementById('pause-score');
+    pauseScoreEl.textContent = score;
+    // 显示暂停菜单
+    pauseMenu.classList.remove('hidden');
+    // 隐藏HUD
+    hud.style.display = 'none';
+}
 
-// 暂停菜单按钮功能
+function hidePauseMenu() {
+    // 隐藏暂停菜单
+    const pauseMenu = document.getElementById('pause-menu');
+    pauseMenu.classList.add('hidden');
+    // 显示HUD
+    hud.style.display = 'flex';
+}
+
+// 暂停游戏
+function pauseGame() {
+    isPaused = true;
+    currentState = STATE.PAUSED;
+    // 显示暂停菜单
+    showPauseMenu();
+}
+// 暂停后继续
 function continueGame() {
     // 继续游戏
     isPaused = false;
@@ -230,7 +220,7 @@ function init() {
         if (e.code === 'Space' && currentState === STATE.PLAYING) player.useBomb();
         // ESC键暂停功能
         if (e.key === 'Escape' && currentState === STATE.PLAYING) {
-            togglePause();
+            pauseGame();
         } else if (e.key === 'Escape' && currentState === STATE.PAUSED) {
             continueGame();
         }
