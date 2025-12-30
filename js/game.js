@@ -171,7 +171,9 @@ function gameLoop() {
 
         powerUpSpawnTimer++;
         if (powerUpSpawnTimer > 400) {
-            if (Math.random() < 0.5) spawnPowerUp(); powerUpSpawnTimer = 0;
+            if (Math.random() < 0.5)
+                spawnPowerUp();
+            powerUpSpawnTimer = 0;
         }
 
         player.update(); player.draw(); updateHUD();
