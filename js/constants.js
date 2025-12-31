@@ -33,14 +33,14 @@ const WEAPON_CONFIG = {
         color: "#fa0",
         recoil: 0,
         getStats: (lvl) => ({
-            count: 6 + lvl * 2,
+            count: 6 + lvl * 3,
             rate: 500,
             spread: 0.8,
-            damage: 4,
-            pierce: 1,
+            damage: 5,
+            pierce: 2,
             velocity: 10,
-            radius: 4,
-            life: 25
+            radius: 5,
+            life: 30
         })
     },
     'sniper': {
@@ -57,10 +57,25 @@ const WEAPON_CONFIG = {
             radius: 5,
             life: Infinity
         })
+    },
+    'plasma_railgun': {
+        name: "等离子轨道炮",
+        color: "#a0f",
+        recoil: 3.0,    //较高的后座力
+        getStats: (lvl) => ({
+            count: Math.min(1 + Math.floor(lvl / 3), 3), // 每3级增加1束
+            rate: Math.max(300 - lvl * 20, 120), // 较快的射速
+            spread: 0.1, // 较小的散布
+            damage: 6 + lvl * 2, // 较高的基础伤害
+            pierce: 3 + Math.floor(lvl / 2), // 良好的穿透能力
+            velocity: 20, // 中等速度
+            radius: 3, // 中等大小
+            life: 100 // 100生命周期
+        })
     }
 };
 
-const WEAPON_TYPES = ['blaster', 'shotgun', 'sniper'];
+const WEAPON_TYPES = ['blaster', 'shotgun', 'sniper', 'plasma_railgun'];
 
 // 敌人配置
 const ENEMY_TYPES = [

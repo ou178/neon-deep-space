@@ -81,9 +81,15 @@ function returnToMenu() {
     currentState = STATE.MENU;
     highScoreDisplay.innerText = highScore.toLocaleString();
     energyDisplay.innerText = currentEnergy.toLocaleString();
+    AudioSys.stopBGM(); //返回主菜单暂停BGM
 }
 
 function startGame() {
+    // 如果游戏状态已经是 PLAYING 且玩家已存在，避免重复初始化
+    if (currentState === STATE.PLAYING && player && player.isAlive ) return;
+
+    currentState = STATE.PLAYING;
+    isPaused = false; // 确保游戏没有暂停
     globalDamageMult = 1 + ((playerUpgrades.damage || 0) * 0.1);
     globalEnemySpeedMult = 1 - Math.min(0.5, ((playerUpgrades.enemySlow || 0) * 0.1)); 
     globalRecoilMult = 1 - Math.min(0.8, ((playerUpgrades.recoil || 0) * 0.2)); 
@@ -127,11 +133,10 @@ function startGame() {
         // 传入索引 i 和 总数 satelliteCount
         player.orbiters.push(new Orbiter(i, satelliteCount));
     }
-
-    currentState = STATE.PLAYING;
     freezeTimer = 0;
     difficultyFactor = 0.5;
-    currentMilestoneIndex = 0; globalDifficultyMultiplier = 1;
+    currentMilestoneIndex = 0;
+    globalDifficultyMultiplier = 1;
     startScreen.classList.add('hidden');
     shopScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');

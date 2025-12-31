@@ -1,0 +1,40 @@
+# 文本文件默认使用CRLF行尾
+* text=auto eol=crlf
+
+# 特定文件类型的行尾设置
+*.js text eol=crlf
+*.html text eol=crlf
+*.css text eol=crlf
+*.json text eol=crlf
+*.md text eol=crlf
+*.txt text eol=crlf
+*.csv text eol=crlf
+*.xml text eol=crlf
+*.yaml text eol=crlf
+*.yml text eol=crlf
+
+# 二进制文件保持原样
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.mp4 binary
+*.avi binary
+*.zip binary
+*.rar binary
+*.7z binary
+*.exe binary
+*.dll binary
+*.lib binary
+*.a binary
+*.obj binary
+*.bin binary

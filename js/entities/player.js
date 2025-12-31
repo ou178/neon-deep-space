@@ -41,8 +41,8 @@ class Player {
         const config = WEAPON_CONFIG[this.currentWeapon];
         let colorClass = "text-yellow";
         if (this.currentWeapon === 'shotgun') colorClass = "text-orange";
-        if (this.currentWeapon === 'sniper') colorClass = "text-cyan";
-        
+        else if (this.currentWeapon === 'sniper') colorClass = "text-cyan";
+        else if (this.currentWeapon === 'plasma_railgun') colorClass = "text-purple";
         weaponModeDisplay.className = `hud-item ${colorClass}`;
         weaponModeDisplay.innerText = `武器: ${config.name} [F]`;
     }

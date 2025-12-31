@@ -131,6 +131,7 @@ canvas {
 .hidden {
     opacity: 0;
     pointer-events: none;
+    display: none; /* 完全隐藏元素，不占据空间 */
 }
 
 h1 {

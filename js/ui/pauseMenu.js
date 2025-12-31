@@ -17,36 +17,49 @@ function hidePauseMenu() {
     pauseMenu.classList.add('hidden');
     // 显示HUD
     hud.style.display = 'flex';
+    // 移除所有暂停菜单按钮的焦点，防止空格键触发按钮点击
+    const pauseButtons = pauseMenu.querySelectorAll('button');
+    pauseButtons.forEach(btn => {
+        btn.blur();
+    });
+    // 将焦点设置到游戏画布上，确保空格键不会触发其他元素
+    canvas.focus();
 }
 
 // 暂停游戏
 function pauseGame() {
-    isPaused = true;
-    currentState = STATE.PAUSED;
-    // 显示暂停菜单
-    showPauseMenu();
+    if (currentState === STATE.PLAYING) {
+        isPaused = true;
+        currentState = STATE.PAUSED;
+        // 显示暂停菜单
+        showPauseMenu();
+    }
 }
 
 // 暂停后继续
 function continueGame() {
+    if (currentState === STATE.PAUSED) {
     // 继续游戏
     isPaused = false;
     currentState = STATE.PLAYING;
     hidePauseMenu();
+    }
 }
 
 function restartGameFromPause() {
     // 从暂停状态重新开始游戏
+    if (currentState === STATE.PAUSED) {
     isPaused = false;
-    currentState = STATE.PLAYING;
-    continueGame();
-    startGame();
+    hidePauseMenu(); // 先隐藏暂停菜单，移除按钮焦点
+    startGame(); // 然后重新开始游戏
+    }
 }
 
 function returnToMainMenuFromPause() {
     // 从暂停状态返回主菜单
-    isPaused = false;
-    currentState = STATE.MENU;
-    hidePauseMenu();
-    returnToMenu();
+    if (currentState === STATE.PAUSED) {
+        isPaused = false;
+        hidePauseMenu(); // 先隐藏暂停菜单，移除按钮焦点
+        returnToMenu();
+    }
 }
